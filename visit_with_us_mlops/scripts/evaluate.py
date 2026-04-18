@@ -11,18 +11,24 @@ from datasets import load_dataset
 
 # --- Configuration ---
 HF_TOKEN = os.environ.get("HF_TOKEN")
+
+# Validate HF_TOKEN early
+if not HF_TOKEN or not HF_TOKEN.strip():
+    print("Error: HF_TOKEN environment variable is missing or empty. Please set it in GitHub Secrets.")
+    exit(1) # Exit the script
+HF_TOKEN = HF_TOKEN.strip() # Clean any whitespace
+
 HF_USERNAME = os.environ.get("HF_USERNAME", "Bharath1434")
 DATASET_REPO = os.environ.get("DATASET_REPO", f"{HF_USERNAME}/tourism-package-prediction-dataset")
 MODEL_REPO = os.environ.get("MODEL_REPO", f"{HF_USERNAME}/tourism-package-prediction-model")
 
 # Authenticate with Hugging Face
-if HF_TOKEN:
-    login(token=HF_TOKEN, add_to_git_credential=False)
+login(token=HF_TOKEN, add_to_git_credential=False)
 
 # --- Load Data and Model ---
 print(f"Loading processed test datasets from Hugging Face dataset: {DATASET_REPO}/")
-X_test = load_dataset('csv', data_files=f'hf://datasets/{DATASET_REPO}/data/processed/X_test.csv', split='train').to_pandas()
-y_test = load_dataset('csv', data_files=f'hf://datasets/{DATASET_REPO}/data/processed/y_test.csv', split='train').to_pandas().squeeze()
+X_test = load_dataset('csv', data_files=f'hf://datasets/{DATASET_REPO}/data/processed/X_test.csv', split='train', token=HF_TOKEN).to_pandas()
+y_test = load_dataset('csv', data_files=f'hf://datasets/{DATASET_REPO}/data/processed/y_test.csv', split='train', token=HF_TOKEN).to_pandas().squeeze()
 print(f"✅ Test data loaded. X_test shape: {X_test.shape}")
 
 print(f"Downloading best model from Hugging Face model hub: {MODEL_REPO}/")
