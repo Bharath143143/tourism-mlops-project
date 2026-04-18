@@ -11,9 +11,9 @@ on:
 env:
   PYTHON_VERSION: '3.10'
   HF_USERNAME: Bharath1434
-  DATASET_REPO: Bharath1434/tourism-mlops-project
-  MODEL_REPO: Bharath1434/tourism-mlops-project
-  SPACE_REPO: Bharath1434/tourism-mlops-project
+  DATASET_REPO: Bharath1434/tourism-package-prediction-dataset
+  MODEL_REPO: Bharath1434/tourism-package-prediction-model
+  SPACE_REPO: Bharath1434/tourism-package-predictor
 
 jobs:
 
