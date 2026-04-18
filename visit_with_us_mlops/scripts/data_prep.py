@@ -21,37 +21,23 @@ PROCESSED_DATA_DIR = os.path.join(DATA_DIR, "processed")
 os.makedirs(DATA_DIR, exist_ok=True)
 os.makedirs(PROCESSED_DATA_DIR, exist_ok=True)
 
-# Authenticate with Hugging Face (optional for download if repo is public, but good practice)
-if HF_TOKEN:
-    login(token=HF_TOKEN, add_to_git_credential=False)
-else:
-    print("WARNING: HF_TOKEN not found in environment. Downloads/uploads might fail for private repos.")
+# Authenticate with Hugging Face (optional for upload if repo is public, but good practice)
+# The raw dataset is now expected to be part of the Git repository, not downloaded from HF.
 
 print(f"--- Starting data preparation for {DATASET_REPO} ---")
 
-# 1. Download raw dataset
+# 1. Load raw dataset from local path (checked out from Git)
 csv_filename = "tourism.csv"
 local_raw_data_path = os.path.join(DATA_DIR, csv_filename)
 
-print(f"Downloading {csv_filename} from {DATASET_REPO} to {local_raw_data_path}...")
-try:
-    downloaded_file_path = hf_hub_download(
-        repo_id=DATASET_REPO,
-        filename=csv_filename,
-        repo_type="dataset",
-        token=HF_TOKEN # Pass token for private repos or rate limiting
-    )
-    # Move to the desired DATA_DIR if downloaded to cache
-    if downloaded_file_path != local_raw_data_path:
-        os.replace(downloaded_file_path, local_raw_data_path)
-    print(f"✅ Raw dataset '{csv_filename}' downloaded successfully.")
-except Exception as e:
-    print(f"❌ Error downloading '{csv_filename}': {e}")
-    print(f"Please ensure the file '{csv_filename}' exists in '{DATASET_REPO}' and HF_TOKEN is correct if it's a private repo.")
+print(f"Attempting to load {csv_filename} from {local_raw_data_path} (assuming it's checked out from Git repo)...")
+if os.path.exists(local_raw_data_path):
+    data = pd.read_csv(local_raw_data_path)
+    print(f"✅ Raw dataset '{csv_filename}' loaded successfully from local path.")
+else:
+    print(f"❌ Error: Raw dataset '{csv_filename}' not found at {local_raw_data_path}. Ensure it's committed to the Git repository.")
     exit(1)
 
-# Load data into pandas DataFrame
-data = pd.read_csv(local_raw_data_path)
 print(f"Loaded data with shape: {data.shape}")
 
 # 2. Data Cleaning
@@ -133,6 +119,12 @@ y_test.to_csv(os.path.join(PROCESSED_DATA_DIR, 'y_test.csv'), index=False)
 print(f"✅ Processed datasets saved locally to {PROCESSED_DATA_DIR}/")
 
 # 4. Upload processed datasets to Hugging Face
+# Authenticate with Hugging Face for uploading
+if HF_TOKEN:
+    login(token=HF_TOKEN, add_to_git_credential=False)
+else:
+    print("WARNING: HF_TOKEN not found in environment. Cannot upload processed data to Hugging Face.")
+
 api = HfApi(token=HF_TOKEN)
 
 files_to_upload_hf = {
