@@ -11,6 +11,13 @@ warnings.filterwarnings('ignore')
 
 # --- Configuration (using environment variables for GitHub Actions) ---
 HF_TOKEN = os.environ.get("HF_TOKEN")
+
+# Validate HF_TOKEN early
+if not HF_TOKEN or not HF_TOKEN.strip():
+    print("Error: HF_TOKEN environment variable is missing or empty. Please set it in GitHub Secrets.")
+    exit(1) # Exit the script
+HF_TOKEN = HF_TOKEN.strip() # Clean any whitespace
+
 HF_USERNAME = os.environ.get("HF_USERNAME", "Bharath1434")
 DATASET_REPO = os.environ.get("DATASET_REPO", f"{HF_USERNAME}/tourism-package-prediction-dataset")
 
@@ -23,6 +30,7 @@ os.makedirs(PROCESSED_DATA_DIR, exist_ok=True)
 
 # Authenticate with Hugging Face (optional for upload if repo is public, but good practice)
 # The raw dataset is now expected to be part of the Git repository, not downloaded from HF.
+login(token=HF_TOKEN, add_to_git_credential=False)
 
 print(f"--- Starting data preparation for {DATASET_REPO} ---")
 
@@ -119,12 +127,6 @@ y_test.to_csv(os.path.join(PROCESSED_DATA_DIR, 'y_test.csv'), index=False)
 print(f"✅ Processed datasets saved locally to {PROCESSED_DATA_DIR}/")
 
 # 4. Upload processed datasets to Hugging Face
-# Authenticate with Hugging Face for uploading
-if HF_TOKEN:
-    login(token=HF_TOKEN, add_to_git_credential=False)
-else:
-    print("WARNING: HF_TOKEN not found in environment. Cannot upload processed data to Hugging Face.")
-
 api = HfApi(token=HF_TOKEN)
 
 files_to_upload_hf = {
