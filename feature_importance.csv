@@ -1,16 +1,16 @@
 ,0
-MaritalStatus_Single,0.16407876
-Designation_Senior Manager,0.103087105
-MaritalStatus_Married,0.09818956
-Designation_VP,0.08141284
-Designation_Executive,0.067374215
-Designation_Manager,0.06701238
-PreferredPropertyStar,0.04181129
-ProductPitched_Deluxe,0.035737652
-ProductPitched_Standard,0.035455603
-Occupation_Large Business,0.0331996
-Passport,0.03223428
-NumberOfFollowups,0.025272796
-CityTier,0.01992117
-ProductPitched_King,0.019502
-NumberOfChildrenVisiting,0.01710604
+MaritalStatus_Single,0.11567536
+Designation_Executive,0.096075416
+Designation_Manager,0.07371034
+MaritalStatus_Married,0.07358849
+Designation_VP,0.06831591
+Occupation_Large Business,0.057797033
+PreferredPropertyStar,0.05138622
+NumberOfFollowups,0.041664477
+Passport,0.038370226
+ProductPitched_King,0.03756324
+ProductPitched_Standard,0.03630992
+ProductPitched_Deluxe,0.030951686
+Designation_Senior Manager,0.030321384
+CityTier,0.029452138
+Occupation_Salaried,0.025726225
