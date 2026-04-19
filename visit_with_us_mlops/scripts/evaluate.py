@@ -53,7 +53,7 @@ except Exception as e:
     print(f"❌ Error during model evaluation: {e}")
     # Set a default low AUC to fail the quality gate
     roc_auc = 0.0
-    
+
 # 4. Implement Quality Gate
 QUALITY_GATE_THRESHOLD = 0.85 # As suggested in mlops_pipeline.yaml
 auc_passed = "false"
